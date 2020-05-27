@@ -1,0 +1,32 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model iTrasitionApp.ViewModel.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/_Layout.cshtml";
+}
+<div>
+    <h2>Авторизация</h2>
+    <form method="post" asp-controller="Account" asp-action="Login">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input class="form-control" placeholder="name@example.com" asp-for="Email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input class="form-control" asp-for="Password" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="RememberMe"></label>
+            <input class="form-control" asp-for="RememberMe" />
+            <span asp-validation-for="RememberMe"></span>
+        </div>
+        <div>
+            <br />
+            <input type="submit" value="Войти" />
+        </div>
+
+    </form>
+</div>

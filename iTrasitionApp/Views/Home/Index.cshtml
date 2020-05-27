@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/_Layout.cshtml";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model iTrasitionApp.Models.Company
+
+
+<h1>@Model.Name</h1>
+
+<h2><a>Current:</a>@Model.Сurrent  <a>GOAL:</a> @Model.Goal</h2>
+
+<h2>@Model.Description</h2>
