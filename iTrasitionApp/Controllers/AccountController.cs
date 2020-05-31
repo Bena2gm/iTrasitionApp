@@ -27,16 +27,14 @@ namespace iTrasitionApp.Controllers
         [HttpGet]
         public IActionResult Index(string id)
         {
+            if (id == null)
+            {
+                ClaimsPrincipal currentUser = this.User;
+                id = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
             using (DBLogic db = new DBLogic(context))
             {
-                if (id == null)
-                {
-                    ClaimsPrincipal currentUser = this.User;
-                    id = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-                }
                 return View(db.LoadCompany(id));
-
-
             }
         }
         [HttpGet]
@@ -54,7 +52,7 @@ namespace iTrasitionApp.Controllers
                 if (result.Succeeded)
                 {
                     await signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Account");
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {

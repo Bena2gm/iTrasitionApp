@@ -48,13 +48,23 @@ namespace iTrasitionApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit()
+        public IActionResult Edit(int id)
         {
-            ClaimsPrincipal currentUser = this.User;
-            var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-            CreateCompanyModel model = new CreateCompanyModel();
-            model.UserId = currentUserID;
-            return View(model);
+            using (var db = new DBLogic(context))
+            {
+                Company model = db.LoadCompanyByID(id);
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Company company)
+        {
+            using (var db = new DBLogic(context))
+            {
+                db.EditCompany(company);
+                return RedirectToAction("Company","Company", new { id = company.Id });
+            }
         }
 
         public IActionResult AddComment(Comment comm)

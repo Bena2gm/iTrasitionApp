@@ -32,13 +32,28 @@ namespace iTrasitionApp.Classes
             comp.Name = model.Name;
             comp.UserId = model.UserId;
             comp.Description = model.Description;
-            comp.UserId = model.UserId;
             comp.Goal = model.Goal;
             comp.Patrons = 0;
             comp.Сurrent = 0;
             comp.Date = DateTime.Now;
             db.Companies.Add(comp);
             db.SaveChanges();
+        }
+
+        public void EditCompany(Company model)
+        {
+            Company toUpdate = db.Companies.Find(model.Id);
+            if (toUpdate != null)
+            {
+                toUpdate.Name = model.Name;
+                toUpdate.UserId = model.UserId;
+                toUpdate.Description = model.Description;
+                toUpdate.UserId = model.UserId;
+                toUpdate.Goal = model.Goal;
+                toUpdate.Patrons = model.Patrons;
+                toUpdate.Сurrent = model.Сurrent;
+                db.SaveChanges();
+            }
         }
 
         public IEnumerable<Company> LoadCompany()
