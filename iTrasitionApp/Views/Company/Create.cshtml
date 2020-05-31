@@ -1,39 +1,28 @@
 ﻿@{
-    ViewData["Title"] = "Create";
-    Layout = "~/Views/_Layout.cshtml";
+    ViewData["Title"] = "Создание компании";
 }
 @model iTrasitionApp.ViewModel.CreateCompanyModel
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
-
-
 
 <h2>CreateCompany</h2>
-<form method="post" asp-controller="Company" asp-action="Create" asp-route-UserId="@Model.UserId">
+<form method="post" asp-controller="Company" asp-action="Create">
     <div asp-validation-summary="ModelOnly"></div>
-    <div>
-        <label class="col-sm-2 col-form-label">Author</label>
-        <div>
-            <input readonly class="form-control-plaintext" value="@User.Identity.Name" />
-        </div>
+    <div class="form-group">
+        <label>Автор</label>
+        <input class="form-control" readonly placeholder="@User.Identity.Name" />
     </div>
-    <div>
-        <div class="input-group-prepend">
-            <label class="input-group-text" asp-for="Name"></label>
-        </div>
-        <input asp-for="Name" />
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input class="form-control" asp-for="Name" />
         <span asp-validation-for="Name"></span>
     </div>
-    <div>
+    <div class="form-group">
         <label asp-for="Description"></label>
-        <textarea asp-for="Description"></textarea>
+        <textarea class="form-control" asp-for="Description" rows="4"></textarea>
         <span asp-validation-for="Description"></span>
     </div>
-    <div>
-        <div class="input-group-prepend">
-            <label class="input-group-text" asp-for="Goal"></label>
-        </div>
-        <input asp-for="Goal" />
+    <div class="form-group">
+        <label asp-for="Goal"></label>
+        <input class="form-control" asp-for="Goal" />
         <span asp-validation-for="Goal"></span>
     </div>
     <input type="submit" value="Создать" />

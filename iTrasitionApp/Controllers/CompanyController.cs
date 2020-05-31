@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using iTrasitionApp.Classes;
+using iTrasitionApp.Models;
 using iTrasitionApp.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,12 +12,43 @@ namespace iTrasitionApp.Controllers
 {
     public class CompanyController : Controller
     {
-        public IActionResult Index()
+        private readonly ApplicationContext context;
+        public CompanyController(ApplicationContext context)
+        {
+            this.context = context;
+        }
+
+        [HttpGet]
+        public IActionResult Create()
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult Create(CreateCompanyModel model)
+        {
+            if (model.UserId == null)
+            {
+                ClaimsPrincipal currentUser = this.User;
+                model.UserId = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+            using (var db = new DBLogic(context))
+            {
+
+                db.CreateCompany(model);
+                return RedirectToAction("Index", "Home");
+            }
+        }
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Company(int id = 1)
+        {
+            using (var db = new DBLogic(context))
+            {
+                return View(db.LoadCompanyByID(id));
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Edit()
         {
             ClaimsPrincipal currentUser = this.User;
             var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -24,20 +56,33 @@ namespace iTrasitionApp.Controllers
             model.UserId = currentUserID;
             return View(model);
         }
-        [HttpPost]
-        public IActionResult Create(CreateCompanyModel model)
+
+        public IActionResult AddComment(Comment comm)
         {
-            if (ModelState.IsValid)
+            using (var db = new DBLogic(context))
             {
-                DBLogic.CreateCompany(model);
-                return RedirectToAction("Index", "Home");
+                if (comm.body != "")
+                {
+                    Comment comment = new Comment();
+                    ClaimsPrincipal currentUser = this.User;
+                    comment.UserId = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                    comment.CompanyId = comm.CompanyId;
+                    comment.date = DateTime.Now;
+                    comment.body = comm.body;
+                    db.AddComment(comment);
+                }
+                return RedirectToAction("Company", "Company", new { id = comm.CompanyId });
             }
-            return View(model);
+
         }
 
-        public IActionResult Company(int id)
+        public IActionResult Like(int id)
         {
-            return View(DBLogic.LoadCompany(id));
+            using (DBLogic db = new DBLogic(context))
+            {
+                db.Like(id);
+                return RedirectToAction("Index","Home");
+            }
         }
     }
 }

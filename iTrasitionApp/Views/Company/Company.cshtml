@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Создание компании";
+}
+@model iTrasitionApp.Models.Company
+<h2>@Model.Name</h2> <a asp-action="Edit" asp-route-id="@Model.Id">Изменить</a>
+
+<div>
+    <p>
+        <a>Автор: </a>
+        @Model.User.UserName
+    </p>
+    <p>
+        @Model.Description
+    </p>
+    <p>
+        <a>Собрано: @Model.Сurrent из @Model.Goal</a>
+        <a asp-controller="Account" asp-action="Pay" asp-route-comany="@Model.Id"> Поддержать</a>
+    </p>
+</div>
+@if (User.Identity.IsAuthenticated) {
+
+
+<form asp-action="AddComment" asp-route-CompanyId="@Model.Id">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="panel-body">
+                <textarea Name="body" class="form-control" rows="2" placeholder="Добавьте Ваш комментарий"></textarea>
+                <div class="mar-top clearfix">
+                    <button class="btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-pencil fa-fw"></i> Добавить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+    } else {<a asp-controller="Account" asp-action="Login">Авторизируйтесь что бы оставить комментарий</a>}
+@if(Model.Comments != null){
+@foreach (var comment in Model.Comments){
+<div class="panel">
+    <div class="panel-body">
+        <div class="mar-btm">
+            <a asp-controller="Account" asp-action="Index" asp-route-id="@comment.User.Id" class="btn-link text-semibold media-heading box-inline">@comment.User.UserName</a>
+            <p class="text-muted text-sm">@comment.date</p>
+        </div>
+        <p>@comment.body</p>
+        <hr>
+    </div>
+</div>}
+}

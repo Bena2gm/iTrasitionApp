@@ -1,14 +1,56 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/_Layout.cshtml";
 }
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model iTrasitionApp.Models.Company
+@model iTrasitionApp.ViewModel.CompanyViewModel
 
 
-<h1>@Model.Name</h1>
+<h1>iTransition</h1>
+@if (User.Identity.IsAuthenticated)
+{
+    <a asp-controller="Company" asp-action="Create">Начать свою компанию</a>
+}
+<table class="table">
+    <tr>
+        <th>Компания</th>
+        <th>Цель сбора</th>
+        <th>Автор</th>
+        <th></th>
+    </tr>
 
-<h2><a>Current:</a>@Model.Сurrent  <a>GOAL:</a> @Model.Goal</h2>
+    @foreach (var c in Model.Company)
+    {
+        <tr>
+            <td><a asp-controller="Company" asp-action="Company" asp-route-id="@c.Id">@c.Name</a></td>
+            <td>@c.Description</td>
+            <td>@c.User.UserName</td>
+            <td>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Account" asp-action="Login" >Авторизируйтесь что бы поддержать</a>
+                } else
+                {
+                    <a class="btn btn-sm btn-primary" asp-controller="Company" asp-action="Like" asp-route-id="@c.Id">Поддержало: @c.Patrons</a>
+                }
 
-<h2>@Model.Description</h2>
+            </td>
+        </tr>
+    }
+</table>
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       class="btn btn-outline-dark">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       class="btn btn-outline-dark">
+        Вперед
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}

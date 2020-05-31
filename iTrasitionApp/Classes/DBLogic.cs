@@ -6,56 +6,75 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace iTrasitionApp.Classes
 {
-    public static class DBLogic
+    public class DBLogic : IDisposable
     {
-        //Data Source = tcp:itrasitionappdbserver.database.windows.net,1433;Initial Catalog = iTrasitionApp_db; User Id = Bena2gm@itrasitionappdbserver;Password=870260-Ben2a
-        public static string ConnectionString { get; set; }
-        public static DbContextOptionsBuilder<ApplicationContext> optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
-        public static DbContextOptions<ApplicationContext> options = optionsBuilder
-                    .UseSqlServer(@"Server=(localdb)\\mssqllocaldb;Database=iTransitionDB;Trusted_Connection=True;")
-                    .Options;
+        private ApplicationContext db;
 
-
-        public static Company LoadCompany(int id)
+        public DBLogic(ApplicationContext context)
         {
-
-            using (ApplicationContext db = new ApplicationContext(options))
-            {
-                Company companies = db.Companies.Where(n => n.Id == id).FirstOrDefault(); ;
-                db.Users.Load();
-                return companies;
-            }
+            db = context;
         }
 
-        public static void CreateCompany(CreateCompanyModel model)
+        public Company LoadCompanyByID(int id)
         {
-            using (ApplicationContext db = new ApplicationContext(options))
+            Company companies = db.Companies.Where(n => n.Id == id).FirstOrDefault(); ;
+            db.Users.Load();
+            db.Comments.Load();
+            return companies;
+        }
+
+        public void CreateCompany(CreateCompanyModel model)
+        {
+            Company comp = new Company();
+            comp.Name = model.Name;
+            comp.UserId = model.UserId;
+            comp.Description = model.Description;
+            comp.UserId = model.UserId;
+            comp.Goal = model.Goal;
+            comp.Patrons = 0;
+            comp.Сurrent = 0;
+            comp.Date = DateTime.Now;
+            db.Companies.Add(comp);
+            db.SaveChanges();
+        }
+
+        public IEnumerable<Company> LoadCompany()
+        {
+            List<Company> company = db.Companies.ToList();
+            db.Users.Load();
+            return company;
+        }
+
+
+        public IEnumerable<Company> LoadCompany(string userId)
+        {
+            List<Company> company = db.Companies.Where(c => c.UserId == userId).ToList();
+            db.Users.Load();
+            return company;
+        }
+
+        public void AddComment(Comment comment)
+        {
+            db.Comments.Add(comment);
+            db.SaveChanges();
+        }
+
+        public void Like(int id)
+        {
+            Company toUpdate = db.Companies.Find(id);
+            if (toUpdate != null)
             {
-                Company comp = new Company();
-                comp.Name = model.Name;
-                comp.UserId = model.UserId;
-                comp.Description = model.Description;
-                comp.UserId = model.UserId;
-                comp.Goal = model.Goal;
-                comp.Patrons = 0;
-                comp.Сurrent = 0;
-                comp.Date = DateTime.Now;
-                db.Companies.Add(comp);
+                toUpdate.Patrons++;
                 db.SaveChanges();
             }
         }
 
-        public static IEnumerable<Company> LoadCompanies()
+        public void Dispose()
         {
-            using (ApplicationContext db = new ApplicationContext(options))
-            {
-                List<Company> company = db.Companies.ToList();
-                db.Users.Load();
-                return company;
-
-            }
+            db.Dispose();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace iTrasitionApp.Models
         [Required]
         public string UserId { get; set; }
         public User User { get; set; }
-        [NotMapped]
+        //[NotMapped]
         public List<Comment> Comments { get; set; }
         [Required]
         public DateTime Date { get; set; }

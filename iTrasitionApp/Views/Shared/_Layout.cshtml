@@ -1,11 +1,9 @@
 ﻿<!DOCTYPE html>
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 <html>
 <head>
     <meta charset="utf-8" />
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
 </head>
 
 <body>
@@ -16,7 +14,7 @@
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index" asp-route-id="1">iTransition</a>
             </div>
             <a asp-controller="Account" asp-action="Index">Профиль</a>
-            <a asp-controller="Company" asp-action="Index">Компании</a>
+            <a asp-controller="Home" asp-action="Index">Компании</a>
 
             @if (User.Identity.IsAuthenticated)
             {

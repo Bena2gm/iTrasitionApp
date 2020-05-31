@@ -1,21 +1,19 @@
-﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model iTrasitionApp.ViewModel.LoginViewModel
-@{
-    ViewData["Title"] = "Login";
-    Layout = "~/Views/_Layout.cshtml";
+﻿@{
+    ViewData["Title"] = "Аккаунт";
 }
+@model IEnumerable<iTrasitionApp.Models.Company>
 
-@if (User.Identity.IsAuthenticated)
-{
-    <a>@User.Identity.Name</a>
+<div class="list-group">
+    <a class="list-group-item active">
+        <span class="glyphicon glyphicon-star"></span> Компании пользователя @Model.FirstOrDefault().User.UserName<span class="badge">9</span>
+    </a>
+    @foreach (var company in Model)
+    {
+        <a asp-controller="Company" asp-action="Company" asp-route-id="@company.Id" class="list-group-item">
+            <span class="glyphicon glyphicon-th-list"></span> @company.Name <span class="badge">Собрано @company.Сurrent из @company.Goal</span>
+        </a>
+    }
 
-    <form method="post" asp-controller="Account" asp-action="Logout">
-        <input type="submit" value="Выход" />
-    </form>
-}
-else
-{
-    <a>Авторизируйтесь</a>
-    <a asp-controller="Account" asp-action="Login">Вход</a>
-    <a asp-controller="Account" asp-action="Register">Регистрация</a>
-}
+
+</div>
+

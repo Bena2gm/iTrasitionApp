@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using iTrasitionApp.Classes;
 using iTrasitionApp.Models;
 using iTrasitionApp.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace iTrasitionApp.Controllers
 {
@@ -13,16 +16,28 @@ namespace iTrasitionApp.Controllers
     {
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
+        private readonly ApplicationContext context;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationContext context)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.context = context;
         }
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(string id)
         {
-            return View();
+            using (DBLogic db = new DBLogic(context))
+            {
+                if (id == null)
+                {
+                    ClaimsPrincipal currentUser = this.User;
+                    id = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                }
+                return View(db.LoadCompany(id));
+
+
+            }
         }
         [HttpGet]
         public IActionResult Register()
@@ -71,7 +86,7 @@ namespace iTrasitionApp.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Account");
+                        return RedirectToAction("Index", "Home");
                     }
 
                 }
@@ -87,7 +102,12 @@ namespace iTrasitionApp.Controllers
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Account");
+            return RedirectToAction("Login", "Account");
+        }
+
+        public IActionResult Pay(int companyId)
+        {
+            return View();
         }
 
     }

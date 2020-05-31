@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using iTrasitionApp.Classes;
 using iTrasitionApp.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +29,8 @@ namespace iTrasitionApp
         Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
             services.AddControllersWithViews();
+            services.AddScoped<DBLogic>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,7 +50,7 @@ namespace iTrasitionApp
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Account}/{action=Login}/{id?}"
+                    pattern: "{controller=Home}/{action=Index}/{id?}"
                     );
             });
         }
